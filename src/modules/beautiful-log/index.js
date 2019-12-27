@@ -16,33 +16,30 @@ const COLOR_ERR = '#FF5252'
 
 /** 内部实现方法 **/
 const innerHandler = function (title, descArr, color) {
+  let titleIsNumber = typeof title === 'number'
   let titleIsStr = typeof title === 'string'
   let descArrIsArr = descArr instanceof Array
-  let descArrIsStr = typeof descArr === 'string'
   
-  /** 参数检查 **/
-  if (titleIsStr === false) {
-    throw new TypeError('title 必须是 string 类型')
-  }
-  else if (descArrIsArr === false && descArrIsStr === false) {
-    throw new TypeError('descArr 必须是 String 或 Array 类型')
+  /** title 参数检查 **/
+  if (titleIsNumber === false && titleIsStr === false) {
+    throw new TypeError('title 必须是 String 或 Number 类型')
   }
   
   /** 统一 descArr 为数组类型 **/
-  if (descArrIsStr) {
-    descArr = [ descArr ]
+  if (descArrIsArr === false) {
+    descArr = Array(descArr)
   }
   
   /** 输出漂亮的日志 **/
+  console.log('')
   console.log('=============================================================')
   console.log(`%c${ title }`, `color: white; font-size: 12px; background-color: ${ color }; padding: 2px 5px; border-radius: 2px`)
-  console.log('----')
+  console.log('-')
   descArr.forEach(function (desc) {
     console.log(desc)
   })
-  console.log('----')
+  console.log('-')
   console.log('=============================================================')
-  console.log('')
   console.log('')
 }
 

@@ -13,10 +13,5 @@ module.exports = {
     else {
       return 'other'
     }
-  })(),
-  configureWebpack: {
-    output: {
-      libraryExport: 'default'
-    }
-  }
+  })()
 }

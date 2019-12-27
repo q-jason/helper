@@ -1073,7 +1073,7 @@ if (typeof window !== 'undefined') {
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
 var web_dom_iterable = __webpack_require__("ac6a");
 
-// CONCATENATED MODULE: ./src/modules/beautiful-log.js
+// CONCATENATED MODULE: ./src/modules/beautiful-log/index.js
 
 
 /**
@@ -1094,34 +1094,32 @@ var COLOR_ERR = '#FF5252';
 /** 内部实现方法 **/
 
 var innerHandler = function innerHandler(title, descArr, color) {
+  var titleIsNumber = typeof title === 'number';
   var titleIsStr = typeof title === 'string';
   var descArrIsArr = descArr instanceof Array;
-  var descArrIsStr = typeof descArr === 'string';
-  /** 参数检查 **/
+  /** title 参数检查 **/
 
-  if (titleIsStr === false) {
-    throw new TypeError('title 必须是 string 类型');
-  } else if (descArrIsArr === false && descArrIsStr === false) {
-    throw new TypeError('descArr 必须是 String 或 Array 类型');
+  if (titleIsNumber === false && titleIsStr === false) {
+    throw new TypeError('title 必须是 String 或 Number 类型');
   }
   /** 统一 descArr 为数组类型 **/
 
 
-  if (descArrIsStr) {
-    descArr = [descArr];
+  if (descArrIsArr === false) {
+    descArr = Array(descArr);
   }
   /** 输出漂亮的日志 **/
 
 
+  console.log('');
   console.log('=============================================================');
   console.log("%c".concat(title), "color: white; font-size: 12px; background-color: ".concat(color, "; padding: 2px 5px; border-radius: 2px"));
-  console.log('----');
+  console.log('-');
   descArr.forEach(function (desc) {
     console.log(desc);
   });
-  console.log('----');
+  console.log('-');
   console.log('=============================================================');
-  console.log('');
   console.log('');
 };
 /**
@@ -1176,6 +1174,6 @@ var err = function err(title, descArr) {
 
 /***/ })
 
-/******/ })["default"];
+/******/ });
 });
 //# sourceMappingURL=helper.umd.js.map
