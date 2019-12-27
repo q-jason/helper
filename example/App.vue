@@ -25,33 +25,45 @@
 </template>
 
 <script>
-  import { log, info, warn, err } from '../src'
+  import { log } from '../src'
 
   export default {
     methods: {
       log () {
-        log('用户改变了所在地区', [
-          '省份：山东省',
-          '城市：青岛市',
-          '地区：城阳区'
-        ])
+        log({
+          title: '用户改变了所在地区',
+          desc: [
+            '省份：山东省',
+            '城市：青岛市',
+            '地区：城阳区'
+          ]
+        })
       },
       info () {
-        info('接收到了后端给的数据，并格式化数据', [
-          { name: '姓名', age: 18, other: [ 1, 2, 3 ] },
-          { name: '班级 - 姓名', age: '18岁', other: [ 1, 2, 3 ] }
-        ])
+        log({
+          type: 'info',
+          title: '接收到了后端给的数据，并格式化数据',
+          desc: [
+            { name: '姓名', age: 18, other: [ 1, 2, 3 ] },
+            { name: '班级 - 姓名', age: '18岁', other: [ 1, 2, 3 ] }
+          ]
+        })
       },
       warn () {
-        warn('转换后端数据时发现问题, 缺少字段', [
-          '缺少字段的数据',
-          { name: '姓名', age: 18, other: [ 1, 2, 3 ] }
-        ])
+        log({
+          type: 'warn',
+          title: '转换后端数据时发现问题, 缺少字段',
+          desc: [
+            { name: '姓名', age: 18, other: [ 1, 2, 3 ] }
+          ]
+        })
       },
       err () {
-        err('请求接口失败，打印出错误原因', [
-          new Error('失败了')
-        ])
+        log({
+          type: 'err',
+          title: '请求接口失败，打印出错误原因',
+          desc: new Error('失败了')
+        })
       }
     }
   }
