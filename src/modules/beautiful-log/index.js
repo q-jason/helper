@@ -1,8 +1,3 @@
-/**
- *  优化控制台输出日志样式
- *  使其醒目易懂
- **/
-
 /** 日志类型 **/
 const TYPE = {
   LOG: 'log',
@@ -27,7 +22,6 @@ const COLOR = {
  **/
 const log = function (options) {
   let { type, title, desc } = options
-  // 确认主题色
   let color = COLOR[ type ] || COLOR[ TYPE.LOG ]
   
   /** 简写 **/
@@ -41,6 +35,13 @@ const log = function (options) {
     let titleIsNumber = typeof title === 'number'
     let titleIsStr = typeof title === 'string'
     let descIsArr = desc instanceof Array
+    let descIsErr = desc instanceof Error
+    
+    /**
+     *  优化使用
+     *    desc 为 Error 类型，那么 type 为 err
+     **/
+    color = descIsErr ? COLOR[ TYPE.ERROR ] : color
     
     /** title 参数检查 **/
     if (!title) {

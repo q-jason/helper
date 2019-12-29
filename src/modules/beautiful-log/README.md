@@ -1,3 +1,9 @@
+## 样式
+![](./images/log.jpg)
+![](./images/info.jpg)
+![](./images/warn.jpg)
+![](./images/err.jpg)
+
 ## 代码示例
 
 ```javascript
@@ -31,8 +37,5 @@ title  | 日志标题, Number 或 String 类型
 desc   | 日志内容，任何类型，若为 Array 类型，则每一项都是一行
 type   | 日志类型，log，info，warn，err 四选一，默认是 log
 
-## 样式
-![](./images/log.jpg)
-![](./images/info.jpg)
-![](./images/warn.jpg)
-![](./images/err.jpg)
+## 注
+1. 内部做了优化，若 desc 为 Error 类型，那么 type 强制性为 err

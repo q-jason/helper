@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import { log } from '../src'
+  import { log, waitValue } from '../src'
 
   export default {
     methods: {
@@ -60,11 +60,35 @@
       },
       err () {
         log({
-          type: 'err',
           title: '请求接口失败，打印出错误原因',
-          desc: new Error('失败了')
+          desc: new Error('失败了'),
+          type: 'warn'
         })
       }
+    },
+    async created () {
+      let value = 10086
+
+      setTimeout(() => {
+        waitValue.emit('test', value)
+      }, 2000)
+
+      let data = await waitValue.on('test')
+
+      log({
+        title: '结束了',
+        desc: data
+      })
+
+      value = 456
+
+      let data2 = await waitValue.on('test')
+
+      log({
+        title: '立刻返回',
+        desc: data2
+      })
+
     }
   }
 </script>
