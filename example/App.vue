@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1>点击按钮，打开控制台看输出</h1>
+    <h1>
+      点击按钮，打开控制台看输出
+    </h1>
     <!-- log -->
     <div class="group">
       <h3 class="group-title">
@@ -21,14 +23,57 @@
         </button>
       </div>
     </div>
+    <!-- wait-value -->
+    <div class="group">
+      <h3 class="group-title">
+        等值操作（wait-value）
+      </h3>
+      <div class="group-body">
+        <button @click="waitValue">
+          等值操作（wait-value）
+        </button>
+      </div>
+    </div>
+    <!-- input number range -->
+    <div class="group">
+      <h3 class="group-title">
+        强化 h5 input number min 和 max 属性
+      </h3>
+      <div class="group-body">
+        <div>
+          先不点按钮，输入一个大于 10 的数，然后点击后，重新输入一个大于 10 的数，进行比较。
+          <br>
+          <br>
+          <input type="number" min="0" max="10">
+        </div>
+        <br>
+        <div>
+          <button @click="inputNumberRange">
+            点击我激活使用
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- cache-value -->
+    <div class="group">
+      <h3 class="group-title">
+        缓存回退数据
+      </h3>
+      <div class="group-body">
+        <button @click="cacheValue">
+          点击按钮后，看控制台吧
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import { log, waitValue } from '../src'
+  import { log, waitValue, inputNumberRange, cacheValue } from '../src'
 
   export default {
     methods: {
+      /** 美丽的日志 **/
       log () {
         log({
           title: '用户改变了所在地区',
@@ -64,31 +109,66 @@
           desc: new Error('失败了'),
           type: 'warn'
         })
+      },
+
+      /** 等值操作 **/
+      async waitValue () {
+        let value = { num: 1 }
+        /** 延迟两秒后，test 标识赋值 **/
+        setTimeout(() => {
+          waitValue.emit('test', value)
+        }, 2000)
+
+        /** 等待 test 赋值后，才继续进行 **/
+        let data = await waitValue.on('test')
+        log({
+          title: '结束了',
+          desc: data
+        })
+
+        /** 下面执行时，因为 test 已被赋值，所以会立刻执行，并且结果为缓存的值 **/
+        value = { num: 2 }
+        let data2 = await waitValue.on('test')
+        log({
+          title: '立刻返回',
+          desc: data2
+        })
+      },
+
+      /** 强化 h5 input min 和 max **/
+      inputNumberRange () {
+        inputNumberRange()
+      },
+
+      /** 缓存回退数据 **/
+      cacheValue () {
+        /** 定义了 data 并缓存 **/
+        let data = { sons1: [ { name: 'son1' }, { name: 'son2' } ] }
+        cacheValue.cache('myData', data)
+        log({
+          title: '1. 首先定义了数据 data 并缓存了',
+          desc: [ data ],
+          type: 'info'
+        })
+
+        /** 改变 data 数据 **/
+        data.sons1.push({ name: 'son3' })
+        log({
+          title: '2. 改变了数据 data',
+          desc: [ data ],
+          type: 'info'
+        })
+
+        /** 回退数据 **/
+        cacheValue.back('myData', function (cacheData) {
+          data = cacheData
+        })
+        log({
+          title: '3. 回退了数据 data',
+          desc: [ data ],
+          type: 'info'
+        })
       }
-    },
-    async created () {
-      let value = 10086
-
-      setTimeout(() => {
-        waitValue.emit('test', value)
-      }, 2000)
-
-      let data = await waitValue.on('test')
-
-      log({
-        title: '结束了',
-        desc: data
-      })
-
-      value = 456
-
-      let data2 = await waitValue.on('test')
-
-      log({
-        title: '立刻返回',
-        desc: data2
-      })
-
     }
   }
 </script>

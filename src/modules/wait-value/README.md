@@ -68,7 +68,8 @@ import { waitValue } from 'jason-helper'
  -------------- | ----------- | ----------------
  waitValue.on   | name        | 监听某值的赋值通知，该方法返回 Promise，resolve 时将返回结果
  waitValue.emit | name, value | 发出通知，代表值已赋值，value 为结果
-
+ 
 ## 注意
-1. on 和 emit 的 name 需要一致
-2. 若 on 在 emit 后执行，则会立刻 resolve，并返回 emit 时的值（emit 时值会被缓存起来）
+- on 和 emit 的 name 需要一致
+- 若 on 在 emit 后执行，则会立刻 resolve，并返回 emit 时的值（emit 时值会被缓存起来）
+- !!! 该方法宗旨为 “等待某值赋值后才继续进行的操作” 而非 “监听值改变” !!!
