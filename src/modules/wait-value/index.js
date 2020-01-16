@@ -96,7 +96,7 @@ let emit = function (name, value) {
   /**
    *  不是错误，则 resolve
    *  设置已完成标识
-   *  缓存结果
+   *  缓存结果（若为引用类型则会深拷贝）
    **/
   else {
     target[ KEY_RESOLVE_ARR ].forEach(resolve => {
@@ -104,8 +104,11 @@ let emit = function (name, value) {
     })
     /** 状态改变 **/
     target[ KEY_OK ] = true
-    /** 缓存值 **/
-    target[ KEY_VALUE ] = value
+    /** 缓存值，若为引用类型深拷贝**/
+    target[ KEY_VALUE ] = typeof value === 'object' ?
+      JSON.parse(JSON.stringify(value))
+      :
+      value
     /** 清除 resolve 和 reject 数组 **/
     target[ KEY_RESOLVE_ARR ] = null
     target[ KEY_REJECT_ARR ] = null

@@ -3574,10 +3574,35 @@ var log = function log(options) {
 };
 
 
+// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/symbol/iterator.js
+var iterator = __webpack_require__("5d58");
+var iterator_default = /*#__PURE__*/__webpack_require__.n(iterator);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/symbol.js
+var symbol = __webpack_require__("67bb");
+var symbol_default = /*#__PURE__*/__webpack_require__.n(symbol);
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/typeof.js
+
+
+function typeof_typeof(obj) {
+  if (typeof symbol_default.a === "function" && typeof iterator_default.a === "symbol") {
+    typeof_typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    typeof_typeof = function _typeof(obj) {
+      return obj && typeof symbol_default.a === "function" && obj.constructor === symbol_default.a && obj !== symbol_default.a.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return typeof_typeof(obj);
+}
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
 var es6_promise = __webpack_require__("551c");
 
 // CONCATENATED MODULE: ./src/modules/wait-value/index.js
+
 
 
 
@@ -3678,7 +3703,7 @@ var wait_value_emit = function emit(name, value) {
   /**
    *  不是错误，则 resolve
    *  设置已完成标识
-   *  缓存结果
+   *  缓存结果（若为引用类型则会深拷贝）
    **/
   else {
       target[KEY_RESOLVE_ARR].forEach(function (resolve) {
@@ -3687,9 +3712,9 @@ var wait_value_emit = function emit(name, value) {
       /** 状态改变 **/
 
       target[KEY_OK] = true;
-      /** 缓存值 **/
+      /** 缓存值，若为引用类型深拷贝**/
 
-      target[KEY_VALUE] = value;
+      target[KEY_VALUE] = typeof_typeof(value) === 'object' ? JSON.parse(JSON.stringify(value)) : value;
       /** 清除 resolve 和 reject 数组 **/
 
       target[KEY_RESOLVE_ARR] = null;
@@ -3705,10 +3730,15 @@ var waitValue = {
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.number.constructor.js
 var es6_number_constructor = __webpack_require__("c5f6");
 
-// CONCATENATED MODULE: ./src/modules/input-number-range/index.js
+// CONCATENATED MODULE: ./src/modules/better-input-number/index.js
 
 
-var inputNumberRange = function inputNumberRange() {
+/**
+ *  强化 min 和 max 属性
+ *  使只能输入最小值为 min 最大值为 max 的数字
+ **/
+var numberRange = function numberRange() {
+  /** 限制 输入 超过最大或最小值 **/
   document.addEventListener('input', function (e) {
     var target = e.target;
     var nodeName = target.nodeName,
@@ -3735,32 +3765,48 @@ var inputNumberRange = function inputNumberRange() {
     }
   });
 };
+/**
+ *  只能输入数字，禁止输入非法字符(e, E, +)
+ *  只允许在开头输入 -
+ *
+ *  备注：只允许在开头输入 - 还不健壮，可以输入多个 -
+ **/
 
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/symbol/iterator.js
-var iterator = __webpack_require__("5d58");
-var iterator_default = /*#__PURE__*/__webpack_require__.n(iterator);
+var onlyNumber = function onlyNumber() {
+  document.addEventListener('keydown', function (e) {
+    var target = e.target,
+        key = e.key;
+    var nodeName = target.nodeName,
+        type = target.type,
+        value = target.value;
+    /** input, 类型为 number **/
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/symbol.js
-var symbol = __webpack_require__("67bb");
-var symbol_default = /*#__PURE__*/__webpack_require__.n(symbol);
+    if (nodeName === 'INPUT' && type === 'number') {
+      /** 不允许出现 +, e, E **/
+      if (['+', 'e', 'E'].indexOf(key) !== -1) {
+        e.preventDefault();
+      }
+      /** - 只允许出现在开头 **/
 
-// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/typeof.js
+
+      if (key === '-' && value.length) {
+        e.preventDefault();
+      }
+    }
+  });
+};
+/**
+ *  整合
+ **/
 
 
-function typeof_typeof(obj) {
-  if (typeof symbol_default.a === "function" && typeof iterator_default.a === "symbol") {
-    typeof_typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    typeof_typeof = function _typeof(obj) {
-      return obj && typeof symbol_default.a === "function" && obj.constructor === symbol_default.a && obj !== symbol_default.a.prototype ? "symbol" : typeof obj;
-    };
-  }
+var betterInputNumber = function betterInputNumber() {
+  numberRange();
+  onlyNumber();
+};
 
-  return typeof_typeof(obj);
-}
+
 // CONCATENATED MODULE: ./src/modules/cache-value/index.js
 
 
@@ -3814,7 +3860,7 @@ var cacheValue = {
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib-no-default.js
 /* concated harmony reexport log */__webpack_require__.d(__webpack_exports__, "log", function() { return log; });
 /* concated harmony reexport waitValue */__webpack_require__.d(__webpack_exports__, "waitValue", function() { return waitValue; });
-/* concated harmony reexport inputNumberRange */__webpack_require__.d(__webpack_exports__, "inputNumberRange", function() { return inputNumberRange; });
+/* concated harmony reexport betterInputNumber */__webpack_require__.d(__webpack_exports__, "betterInputNumber", function() { return betterInputNumber; });
 /* concated harmony reexport cacheValue */__webpack_require__.d(__webpack_exports__, "cacheValue", function() { return cacheValue; });
 
 

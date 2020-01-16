@@ -1,5 +1,7 @@
 <template>
   <div>
+    <input type="number" ref="test">
+
     <h1>
       点击按钮，打开控制台看输出
     </h1>
@@ -37,18 +39,20 @@
     <!-- input number range -->
     <div class="group">
       <h3 class="group-title">
-        强化 h5 input number min 和 max 属性
+        强化 h5 input number 元素
       </h3>
       <div class="group-body">
-        <div>
-          先不点按钮，输入一个大于 10 的数，然后点击后，重新输入一个大于 10 的数，进行比较。
+        <div style="font-size: 13px;">
+          1. 先不点按钮，输入一个大于 1000 的数，然后点击后，重新输入一个大于 1000 的数，进行比较。
+          <br>
+          2. 先不点击按钮，输入 - + e E，然后点击按钮，再次输入这四个非法字符，进行比较
           <br>
           <br>
-          <input type="number" min="0" max="10">
+          <input type="number" min="-1000" max="1000">
         </div>
         <br>
         <div>
-          <button @click="inputNumberRange">
+          <button @click="betterInputNumber">
             点击我激活使用
           </button>
         </div>
@@ -69,7 +73,7 @@
 </template>
 
 <script>
-  import { log, waitValue, inputNumberRange, cacheValue } from '../src'
+  import { log, waitValue, betterInputNumber, cacheValue } from '../src'
 
   export default {
     methods: {
@@ -135,9 +139,9 @@
         })
       },
 
-      /** 强化 h5 input min 和 max **/
-      inputNumberRange () {
-        inputNumberRange()
+      /** 强化 h5 input number 元素 **/
+      betterInputNumber () {
+        betterInputNumber()
       },
 
       /** 缓存回退数据 **/
@@ -169,6 +173,11 @@
           type: 'info'
         })
       }
+    },
+    mounted () {
+      this.$refs.test.addEventListener('textInput', function (e) {
+        console.dir(e.target.value);
+      })
     }
   }
 </script>

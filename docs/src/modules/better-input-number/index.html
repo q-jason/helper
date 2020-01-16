@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>说明 | jason-helper</title>
+    <meta name="description" content="">
+    
+    
+    <link rel="preload" href="/helper/assets/css/0.styles.9defc00a.css" as="style"><link rel="preload" href="/helper/assets/js/app.e09db807.js" as="script"><link rel="preload" href="/helper/assets/js/3.cbf7b6db.js" as="script"><link rel="preload" href="/helper/assets/js/6.b4f670ea.js" as="script"><link rel="prefetch" href="/helper/assets/js/1.928ba647.js"><link rel="prefetch" href="/helper/assets/js/10.bcca4e74.js"><link rel="prefetch" href="/helper/assets/js/11.25e3d9f4.js"><link rel="prefetch" href="/helper/assets/js/12.586e2979.js"><link rel="prefetch" href="/helper/assets/js/13.37140cfd.js"><link rel="prefetch" href="/helper/assets/js/4.e48b36df.js"><link rel="prefetch" href="/helper/assets/js/5.37233820.js"><link rel="prefetch" href="/helper/assets/js/7.626a4589.js"><link rel="prefetch" href="/helper/assets/js/8.9429df67.js"><link rel="prefetch" href="/helper/assets/js/9.91d6f8e8.js">
+    <link rel="stylesheet" href="/helper/assets/css/0.styles.9defc00a.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/helper/" class="home-link router-link-active"><!----> <span class="site-name">jason-helper</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><a href="/helper/" class="sidebar-link">首页</a></li><li><a href="/helper/src/modules/beautiful-log/" class="sidebar-link">漂亮的日志</a></li><li><a href="/helper/src/modules/wait-value/" class="sidebar-link">等待赋值才执行</a></li><li><a href="/helper/src/modules/better-input-number/" class="active sidebar-link">强化 input number</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/helper/src/modules/better-input-number/#说明" class="sidebar-link">说明</a></li><li class="sidebar-sub-header"><a href="/helper/src/modules/better-input-number/#方法设计" class="sidebar-link">方法设计</a></li><li class="sidebar-sub-header"><a href="/helper/src/modules/better-input-number/#包罗万象的例子" class="sidebar-link">包罗万象的例子</a></li><li class="sidebar-sub-header"><a href="/helper/src/modules/better-input-number/#效果展示" class="sidebar-link">效果展示</a></li></ul></li><li><a href="/helper/src/modules/cache-value/" class="sidebar-link">缓存回退数据</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="说明"><a href="#说明" class="header-anchor">#</a> 说明</h2> <blockquote><p>!!! 该函数仅游览器端生效 !!! <br>
+主要作用为补足 h5 input 标签 type 为 number 时的 min max 功能 <br>
+默认 type number 并设置 min 和 max 时，输入时还是会超出指定范围 <br>
+本函数逻辑为若小于 min 或大于 max，则自动重置值为 min 和 max</p></blockquote> <h2 id="方法设计"><a href="#方法设计" class="header-anchor">#</a> 方法设计</h2> <table><thead><tr><th>function</th> <th>description</th></tr></thead> <tbody><tr><td>inputNumberRange</td> <td>直接调用就好，无特殊注意</td></tr></tbody></table> <h2 id="包罗万象的例子"><a href="#包罗万象的例子" class="header-anchor">#</a> 包罗万象的例子</h2> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> inputNumberRange <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'jason-helper'</span><span class="token punctuation">;</span>
+
+<span class="token function">inputNumberRange</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="效果展示"><a href="#效果展示" class="header-anchor">#</a> 效果展示</h2> <h3 id="测试代码"><a href="#测试代码" class="header-anchor">#</a> 测试代码</h3> <p><img src="/helper/assets/img/code.c8b70722.jpg" alt=""></p> <h3 id="使用前"><a href="#使用前" class="header-anchor">#</a> 使用前</h3> <p><img src="/helper/assets/img/before.c6230d0e.gif" alt=""></p> <h3 id="使用后"><a href="#使用后" class="header-anchor">#</a> 使用后</h3> <p><img src="/helper/assets/img/after.f04de00f.gif" alt=""></p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/helper/src/modules/wait-value/" class="prev">等待赋值才执行</a></span> <span class="next"><a href="/helper/src/modules/cache-value/">缓存回退数据</a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/helper/assets/js/app.e09db807.js" defer></script><script src="/helper/assets/js/3.cbf7b6db.js" defer></script><script src="/helper/assets/js/6.b4f670ea.js" defer></script>
+  </body>
+</html>

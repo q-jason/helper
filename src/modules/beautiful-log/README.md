@@ -1,10 +1,19 @@
-## 样式
-![](./images/log.jpg)
-![](./images/info.jpg)
-![](./images/warn.jpg)
-![](./images/err.jpg)
+## 说明
+> 美化 console 样式，使控制台更简单易懂
+## 方法设计
 
-## 代码示例
+ function  | params        | description
+ --------- | ------------- | ------------------------------
+ log       | options       | options = { title, desc, type }
+ 
+## options 解释
+- options.title - 标题，String 或 Number 类型
+- options.desc  - 详细信息，任何类型，若为数组，则会输出多行信息
+- options.type  - 输出类型，有 log, info, warn, err 四种
+## 简易使用
+- options 也可以为 String 类型，会当做 title，输出 type 为 log 类型的日志 <br/>
+- 若 options.desc 为 Error 类型，则 type 强制性为 err，无需手动指定
+## 包罗万象的例子
 
 ```javascript
 import { log } from 'jason-helper';
@@ -28,14 +37,8 @@ log({
 })
 
 ```
-
-## 参数介绍
-
-params | description
------- | ----------------------
-title  | 日志标题, Number 或 String 类型
-desc   | 日志内容，任何类型，若为 Array 类型，则每一项都是一行
-type   | 日志类型，log，info，warn，err 四选一，默认是 log
-
-## 注
-1. 内部做了优化，若 desc 为 Error 类型，那么 type 强制性为 err
+## 样式设计
+![](./images/log.jpg)
+![](./images/info.jpg)
+![](./images/warn.jpg)
+![](./images/err.jpg)
