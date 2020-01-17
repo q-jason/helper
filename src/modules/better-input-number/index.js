@@ -28,9 +28,11 @@ const numberRange = function () {
     /** 越界逻辑 **/
     if (min && value < min) {
       target.value = min
+      dispatchInput(target)
     }
     if (max && value > max) {
       target.value = max
+      dispatchInput(target)
     }
   })
 }
@@ -41,57 +43,7 @@ const numberRange = function () {
  *
  *  待完成
  **/
-const onlyNumberOld = function () {
-  document.addEventListener('keydown', function (e) {
-    let { target, key } = e
-    /** 这里的 oldValue 是发生输入之前的值，keydown 事件的特点 **/
-    let { nodeName, type, value: oldValue } = target
-    
-    /** input[type="number"] 才走逻辑 **/
-    if (nodeName !== 'INPUT' || type !== 'number') {
-      return
-    }
-    
-    /** 等待赋新值 **/
-    setTimeout(() => {
-      /** 获取输入之后的值 **/
-      let newValue = target.value
-      
-      /**
-       *  若不是删除按键
-       *  并且为空值，则代表有非法字符
-       *  回退值为之前的旧值
-       *
-       *  兼容性:
-       *    这里的 Backspace 在手机下很神奇的有值....
-       *    兼容性真是糟心....
-       **/
-      if (key !== 'Backspace' && newValue === '') {
-        target.value = oldValue
-      }
-    }, 20)
-  })
-}
 const onlyNumber = function () {
-  const KEY_CACHE_VALUE = 'jasonHelperBetterInputNumberOnlyNumber'
-  
-  /** 在 keydown 中缓存还未输入的值 **/
-  document.addEventListener('keydown', function (e) {
-    let { target, key } = e
-    /** 这里的 oldValue 是发生输入之前的值，keydown 事件的特点 **/
-    let { nodeName, type, value: oldValue } = target
-    
-    /** input[type="number"] 才走逻辑 **/
-    if (nodeName !== 'INPUT' || type !== 'number') {
-      return
-    }
-    
-    /** oldValue 有可能是空字符的情况，可能是由特殊字符造成的 **/
-    if (oldValue) {
-      target[ KEY_CACHE_VALUE ] = oldValue
-    }
-  })
-  
   /**
    *  在 textInput 中判断是否含有特殊符号，还原旧值
    *  使用 textInput 事件而非 input 事件，目的是兼容性
@@ -100,41 +52,65 @@ const onlyNumber = function () {
    **/
   document.addEventListener('textInput', function (e) {
     let { target, data } = e
-    /** 这里的 oldValue 是发生输入之前的值，keydown 事件的特点 **/
-    let { nodeName, type, value } = target
-    let cacheValue = target[ KEY_CACHE_VALUE ]
+    let { nodeName, type, value: oldValue } = target
+    let newValue = null
     
     /** input[type="number"] 才走逻辑 **/
     if (nodeName !== 'INPUT' || type !== 'number') {
       return
     }
     
-    /** 不允许出现 '+' 'e' 'E' **/
-    if ([ '+', 'e', 'E' ].indexOf(data) !== -1) {
-      back()
-    }
-    
-    /** 只有开头允许出现一个 '-' **/
-    if (data === '-' && cacheValue) {
-      back()
-    }
-    
-    /** 回退值 **/
-    function back () {
-      /** 这里有个执行顺序问题 **/
-      setTimeout(() => {
-        target.value = cacheValue
-      }, 20)
-    }
+    /** 等待新值 **/
+    setTimeout(() => {
+      newValue = target.value
+      
+      /** 永远不允许出现 '+' 'e' 'E' **/
+      if ([ '+', 'e', 'E' ].indexOf(data) !== -1) {
+        target.value = oldValue
+        dispatchInput(target)
+      }
+      
+      /**
+       *  只有开头允许出现一个 '-'
+       *
+       *  实现逻辑：
+       *    - 当输出的值为 '-'
+       *    - 新值为空（特殊字符造成）
+       *    - 旧值存在时
+       *
+       *  代表是在输入了数字之后又输入了 '-'，为非法操作
+       *
+       *  注意：
+       *    - 中文输入法输入 e 后点回车的情况无法判断...
+       *    - 暂时没有办法判断 '----90' 这种情况....
+       *    - 若输入了数字后，全选不删除的情况下直接输入 '-' 的情况无法判断....
+       **/
+      if (data === '-' && newValue === '' && oldValue) {
+        target.value = oldValue
+        dispatchInput(target)
+      }
+      
+    }, 20)
   })
 }
 
 /**
  *  整合
  **/
-const betterInputNumber = function () {
-  numberRange()
-  onlyNumber()
+const betterInputNumber = {
+  numberRange,
+  onlyNumber
+}
+
+/**
+ *  修正值后触发 input 事件
+ *  让其他类库正确同步绑定值
+ *  vue v-model 等
+ ***/
+function dispatchInput (inputEl) {
+  let customEvent = document.createEvent('UIEvents')
+  customEvent.initUIEvent('input', true, true, window, 1)
+  inputEl.dispatchEvent(customEvent)
 }
 
 export { betterInputNumber }

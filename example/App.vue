@@ -1,7 +1,5 @@
 <template>
   <div>
-    <input type="number" ref="test">
-
     <h1>
       点击按钮，打开控制台看输出
     </h1>
@@ -48,7 +46,7 @@
           2. 先不点击按钮，输入 - + e E，然后点击按钮，再次输入这四个非法字符，进行比较
           <br>
           <br>
-          <input type="number" min="-1000" max="1000">
+          <input type="number" min="-1000" max="1000" v-model="test">
         </div>
         <br>
         <div>
@@ -76,6 +74,11 @@
   import { log, waitValue, betterInputNumber, cacheValue } from '../src'
 
   export default {
+    data () {
+      return {
+        test: 0
+      }
+    },
     methods: {
       /** 美丽的日志 **/
       log () {
@@ -141,7 +144,8 @@
 
       /** 强化 h5 input number 元素 **/
       betterInputNumber () {
-        betterInputNumber()
+        betterInputNumber.numberRange()
+        betterInputNumber.onlyNumber()
       },
 
       /** 缓存回退数据 **/
@@ -173,11 +177,6 @@
           type: 'info'
         })
       }
-    },
-    mounted () {
-      this.$refs.test.addEventListener('textInput', function (e) {
-        console.dir(e.target.value);
-      })
     }
   }
 </script>

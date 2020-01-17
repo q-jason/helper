@@ -3735,65 +3735,110 @@ var es6_number_constructor = __webpack_require__("c5f6");
 
 /**
  *  强化 min 和 max 属性
- *  使只能输入最小值为 min 最大值为 max 的数字
+ *  只能输入 min ~ max 区间的数字
+ *
+ *  注意：
+ *    允许空值的存在（否则用户体验非常不好）
  **/
 var numberRange = function numberRange() {
-  /** 限制 输入 超过最大或最小值 **/
   document.addEventListener('input', function (e) {
-    var target = e.target;
+    var target = e.target,
+        data = e.data;
     var nodeName = target.nodeName,
         type = target.type,
         min = target.min,
         max = target.max,
         value = target.value;
-    /** input, 类型为 number **/
+    /** input[type="number"] 才走逻辑 **/
 
-    if (nodeName === 'INPUT' && type === 'number') {
-      /** type number **/
-      value = Number(value);
-      /** min **/
-
-      if (min && value < Number(min)) {
-        target.value = min;
-      }
-      /** max **/
+    if (nodeName !== 'INPUT' || type !== 'number') {
+      return;
+    }
+    /** 若 value 为空值则不做任何处理，因为有可能有特殊符号，导致无法判断 **/
 
 
-      if (max && value > Number(max)) {
-        target.value = max;
-      }
+    if (!value) {
+      return;
+    }
+    /** 统一转为 number 类型 **/
+
+
+    value = Number(value);
+    min = Number(min);
+    max = Number(max);
+    /** 越界逻辑 **/
+
+    if (min && value < min) {
+      target.value = min;
+      dispatchInput(target);
+    }
+
+    if (max && value > max) {
+      target.value = max;
+      dispatchInput(target);
     }
   });
 };
 /**
  *  只能输入数字，禁止输入非法字符(e, E, +)
- *  只允许在开头输入 -
+ *  只允许在开头输入 -（未完成，暂时无法输入 负号，或者只能先输入数字，然后拼接上开头的 负号）
  *
- *  备注：只允许在开头输入 - 还不健壮，可以输入多个 -
+ *  待完成
  **/
 
 
 var onlyNumber = function onlyNumber() {
-  document.addEventListener('keydown', function (e) {
+  /**
+   *  在 textInput 中判断是否含有特殊符号，还原旧值
+   *  使用 textInput 事件而非 input 事件，目的是兼容性
+   *  input 事件在手机下无法判断用到按的是哪个键
+   *  textInput 事件能正常判断出(data 属性)
+   **/
+  document.addEventListener('textInput', function (e) {
     var target = e.target,
-        key = e.key;
+        data = e.data;
     var nodeName = target.nodeName,
         type = target.type,
-        value = target.value;
-    /** input, 类型为 number **/
+        oldValue = target.value;
+    var newValue = null;
+    /** input[type="number"] 才走逻辑 **/
 
-    if (nodeName === 'INPUT' && type === 'number') {
-      /** 不允许出现 +, e, E **/
-      if (['+', 'e', 'E'].indexOf(key) !== -1) {
-        e.preventDefault();
-      }
-      /** - 只允许出现在开头 **/
-
-
-      if (key === '-' && value.length) {
-        e.preventDefault();
-      }
+    if (nodeName !== 'INPUT' || type !== 'number') {
+      return;
     }
+    /** 等待新值 **/
+
+
+    setTimeout(function () {
+      newValue = target.value;
+      /** 永远不允许出现 '+' 'e' 'E' **/
+
+      if (['+', 'e', 'E'].indexOf(data) !== -1) {
+        target.value = oldValue;
+        dispatchInput(target);
+      }
+      /**
+       *  只有开头允许出现一个 '-'
+       *
+       *  实现逻辑：
+       *    - 当输出的值为 '-'
+       *    - 新值为空（特殊字符造成）
+       *    - 旧值存在时
+       *
+       *  代表是在输入了数字之后又输入了 '-'，为非法操作
+       *
+       *  注意：
+       *    - 中文输入法输入 e 后点回车的情况无法判断...
+       *    - 暂时没有办法判断 '----90' 这种情况....
+       *    - 若输入了数字后，全选不删除的情况下直接输入 '-' 的情况无法判断....
+       **/
+
+
+      if (data === '-' && newValue === '' && oldValue) {
+        target.value = oldValue;
+        dispatchInput(target);
+      }
+    }, 20);
   });
 };
 /**
@@ -3801,10 +3846,21 @@ var onlyNumber = function onlyNumber() {
  **/
 
 
-var betterInputNumber = function betterInputNumber() {
-  numberRange();
-  onlyNumber();
+var betterInputNumber = {
+  numberRange: numberRange,
+  onlyNumber: onlyNumber
 };
+/**
+ *  修正值后触发 input 事件
+ *  让其他类库正确同步绑定值
+ *  vue v-model 等
+ ***/
+
+function dispatchInput(inputEl) {
+  var customEvent = document.createEvent('UIEvents');
+  customEvent.initUIEvent('input', true, true, window, 1);
+  inputEl.dispatchEvent(customEvent);
+}
 
 
 // CONCATENATED MODULE: ./src/modules/cache-value/index.js
