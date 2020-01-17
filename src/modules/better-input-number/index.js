@@ -3,7 +3,7 @@
  *  只能输入 min ~ max 区间的数字
  *
  *  注意：
- *    允许空值的存在（否则用户体验非常不好）
+ *    需要允许空值的存在（否则用户体验非常不好）
  **/
 const numberRange = function () {
   document.addEventListener('input', function (e) {
@@ -39,9 +39,6 @@ const numberRange = function () {
 
 /**
  *  只能输入数字，禁止输入非法字符(e, E, +)
- *  只允许在开头输入 -（未完成，暂时无法输入 负号，或者只能先输入数字，然后拼接上开头的 负号）
- *
- *  待完成
  **/
 const onlyNumber = function () {
   /**
