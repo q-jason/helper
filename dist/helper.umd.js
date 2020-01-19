@@ -3738,52 +3738,83 @@ var es6_number_constructor = __webpack_require__("c5f6");
  *  只能输入 min ~ max 区间的数字
  *
  *  注意：
- *    允许空值的存在（否则用户体验非常不好）
+ *    需要允许空值的存在（否则用户体验非常不好）
  **/
 var numberRange = function numberRange() {
-  document.addEventListener('input', function (e) {
+  document.addEventListener('textInput', function (e) {
     var target = e.target,
         data = e.data;
     var nodeName = target.nodeName,
         type = target.type,
         min = target.min,
         max = target.max,
-        value = target.value;
+        oldValue = target.value;
     /** input[type="number"] 才走逻辑 **/
 
     if (nodeName !== 'INPUT' || type !== 'number') {
       return;
     }
-    /** 若 value 为空值则不做任何处理，因为有可能有特殊符号，导致无法判断 **/
+    /** 等待新值写入 **/
 
 
-    if (!value) {
-      return;
-    }
-    /** 统一转为 number 类型 **/
+    setTimeout(function () {
+      var newValue = target.value;
+      var newValueIsEmpty = newValue === '';
+      var oldValueIsEmpty = oldValue === '';
+      /** 统一转为 number 类型，进行操作 **/
 
+      oldValue = Number(oldValue);
+      newValue = Number(newValue);
+      min = Number(min);
+      max = Number(max);
+      /**
+       *  优化正值逻辑(min=0)
+       *    - 若输入的是负号
+       *    - min >= 0
+       **/
 
-    value = Number(value);
-    min = Number(min);
-    max = Number(max);
-    /** 越界逻辑 **/
-
-    if (min && value < min) {
-      target.value = min;
-      dispatchInput(target);
-    }
-
-    if (max && value > max) {
-      target.value = max;
-      dispatchInput(target);
-    }
+      if (data === '-' && min >= 0) {
+        /**
+         *  - 若 oldValue 为空
+         *  则代表当前无值输入，用户仅输入了一个负号，这里重置输入框为空
+         **/
+        if (oldValueIsEmpty) {
+          target.value = '';
+          dispatchInput(target);
+        }
+        /**
+         *  - 若 oldValue 有值
+         *  则代表用户已输入了数字，是在输入数字后，拼接的负号
+         *  这里重置为 oldValue
+         **/
+        else {
+            target.value = oldValue;
+            dispatchInput(target);
+          }
+      }
+      /**
+       *  若非正值逻辑
+       *  newValue 为空时
+       *  不做任何操作
+       **/
+      else if (newValueIsEmpty) {
+          return;
+        }
+        /**
+         *  越界逻辑
+         **/
+        else if (typeof min === 'number' && newValue < min) {
+            target.value = min;
+            dispatchInput(target);
+          } else if (typeof max === 'number' && newValue > max) {
+            target.value = max;
+            dispatchInput(target);
+          }
+    }, 20);
   });
 };
 /**
  *  只能输入数字，禁止输入非法字符(e, E, +)
- *  只允许在开头输入 -（未完成，暂时无法输入 负号，或者只能先输入数字，然后拼接上开头的 负号）
- *
- *  待完成
  **/
 
 

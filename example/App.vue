@@ -46,7 +46,7 @@
           2. 先不点击按钮，输入 - + e E，然后点击按钮，再次输入这四个非法字符，进行比较
           <br>
           <br>
-          <input type="number" min="-1000" max="1000" v-model="test">
+          <input type="number" min="0" max="1000" v-model="test">
         </div>
         <br>
         <div>
@@ -76,7 +76,7 @@
   export default {
     data () {
       return {
-        test: 0
+        test: null
       }
     },
     methods: {
