@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h1>
-      点击按钮，打开控制台看输出
-    </h1>
     <!-- log -->
     <div class="group">
       <h3 class="group-title">
@@ -34,28 +31,6 @@
         </button>
       </div>
     </div>
-    <!-- input number range -->
-    <div class="group">
-      <h3 class="group-title">
-        强化 h5 input number 元素
-      </h3>
-      <div class="group-body">
-        <div style="font-size: 13px;">
-          1. 先不点按钮，输入一个大于 1000 的数，然后点击后，重新输入一个大于 1000 的数，进行比较。
-          <br>
-          2. 先不点击按钮，输入 - + e E，然后点击按钮，再次输入这四个非法字符，进行比较
-          <br>
-          <br>
-          <input type="number" min="0" max="1000" v-model="test">
-        </div>
-        <br>
-        <div>
-          <button @click="betterInputNumber">
-            点击我激活使用
-          </button>
-        </div>
-      </div>
-    </div>
     <!-- cache-value -->
     <div class="group">
       <h3 class="group-title">
@@ -67,11 +42,22 @@
         </button>
       </div>
     </div>
+    <!-- is-empty-value -->
+    <div class="group">
+      <h3 class="group-title">
+        点击按钮后，看控制台吧
+      </h3>
+      <div class="group-body">
+        <button @click="isEmptyValue">
+          点击按钮后，看控制台吧
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import { log, waitValue, betterInputNumber, cacheValue } from '../src'
+  import { log, waitValue, cacheValue, isEmptyValue } from '../src'
 
   export default {
     data () {
@@ -142,12 +128,6 @@
         })
       },
 
-      /** 强化 h5 input number 元素 **/
-      betterInputNumber () {
-        betterInputNumber.numberRange()
-        betterInputNumber.onlyNumber()
-      },
-
       /** 缓存回退数据 **/
       cacheValue () {
         /** 定义了 data 并缓存 **/
@@ -175,6 +155,74 @@
           title: '3. 回退了数据 data',
           desc: [ data ],
           type: 'info'
+        })
+      },
+
+      /** 判断是否为空值 **/
+      isEmptyValue () {
+        log({
+          title: '测试空值情况',
+          desc: [
+            null,
+            isEmptyValue(null),
+            '-------------------',
+            '--------------------',
+            undefined,
+            isEmptyValue(undefined),
+            '-------------------',
+            '--------------------',
+            NaN,
+            isEmptyValue(NaN),
+            '-------------------',
+            '--------------------',
+            '""',
+            isEmptyValue(''),
+            '-------------------',
+            '--------------------',
+            '字符串判断时会去除开头和结尾的空格再判断',
+            '"      "',
+            isEmptyValue('      ')
+          ],
+          type: 'err'
+        })
+
+        log({
+          title: '测试对象是否为空值',
+          desc: [
+            {},
+            isEmptyValue({})
+          ]
+        })
+        log({
+          title: '测试数组是否为空值',
+          desc: [
+            [],
+            isEmptyValue([])
+          ]
+        })
+        log({
+          title: '测试数字 0 是否为空值',
+          desc: [
+            0,
+            isEmptyValue(0)
+          ]
+        })
+        log({
+          title: '测试 true/false 是否为空值',
+          desc: [
+            '真：true',
+            isEmptyValue(true),
+            '------',
+            '假：false',
+            isEmptyValue(false)
+          ]
+        })
+        log({
+          title: '测试字符串是否为空值',
+          desc: [
+            '字符串',
+            isEmptyValue('字符串')
+          ]
         })
       }
     }

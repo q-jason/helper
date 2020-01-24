@@ -53,7 +53,7 @@ const log = function (options) {
     
     /** 统一 desc 为数组类型 **/
     if (descIsArr === false) {
-      if (desc) {
+      if (desc !== undefined) {
         desc = [ desc ]
       }
       else {

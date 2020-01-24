@@ -1,6 +1,6 @@
 {
   "name": "jason-helper",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "main": "./dist/helper.umd.min.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development vue-cli-service serve example/main.js",
