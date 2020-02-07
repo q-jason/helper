@@ -68,12 +68,14 @@
     methods: {
       /** 美丽的日志 **/
       log () {
+        /** 简写 **/
+        log('用户改变了所在地区')
+        /** 完整配置 **/
         log({
           title: '用户改变了所在地区',
           desc: [
-            '省份：山东省',
-            '城市：青岛市',
-            '地区：城阳区'
+            '1. 改变地区',
+            '2. 获取数据'
           ]
         })
       },
@@ -135,7 +137,7 @@
         cacheValue.cache('myData', data)
         log({
           title: '1. 首先定义了数据 data 并缓存了',
-          desc: [ data ],
+          desc: [ JSON.parse(JSON.stringify(data)) ],
           type: 'info'
         })
 

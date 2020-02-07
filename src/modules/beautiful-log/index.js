@@ -24,7 +24,10 @@ const log = function (options) {
   let { type, title, desc } = options
   let color = COLOR[ type ] || COLOR[ TYPE.LOG ]
   
-  /** 简写 **/
+  /**
+   *  简写逻辑
+   *  若配置项为字符串或者数字类型
+   **/
   if (typeof options === 'string' || typeof options === 'number') {
     title = options
     desc = []
@@ -32,27 +35,14 @@ const log = function (options) {
   
   /** 对象配置 **/
   else {
-    let titleIsNumber = typeof title === 'number'
-    let titleIsStr = typeof title === 'string'
-    let descIsArr = desc instanceof Array
-    let descIsErr = desc instanceof Error
-    
     /**
      *  优化使用
      *    desc 为 Error 类型，那么 type 为 err
      **/
-    color = descIsErr ? COLOR[ TYPE.ERROR ] : color
-    
-    /** title 参数检查 **/
-    if (!title) {
-      throw new TypeError('title 必须存在')
-    }
-    if (titleIsNumber === false && titleIsStr === false) {
-      throw new TypeError('title 必须是 String 或 Number 类型')
-    }
+    color = desc instanceof Error ? COLOR[ TYPE.ERROR ] : color
     
     /** 统一 desc 为数组类型 **/
-    if (descIsArr === false) {
+    if (desc instanceof Array === false) {
       if (desc !== undefined) {
         desc = [ desc ]
       }

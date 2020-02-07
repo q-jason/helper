@@ -9,7 +9,6 @@ let innerCacheData = {}
  *  @param { Any }    value - 缓存值
  **/
 const cache = function (name, value) {
-  /** name 强制转化为字符串 **/
   let _name = String(name)
   let _value = value
   

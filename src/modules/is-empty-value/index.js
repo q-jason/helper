@@ -17,7 +17,9 @@ const isEmptyValue = function (value) {
   }
   
   /** 检验通过 **/
-  return false
+  else {
+    return false
+  }
 }
 
 export { isEmptyValue }

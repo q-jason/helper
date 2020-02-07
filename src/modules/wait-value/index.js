@@ -1,16 +1,18 @@
-/** 代表已完成的 key **/
-const KEY_OK = 'ok'
-/** 代表缓存值的 key **/
-const KEY_VALUE = 'value'
-/** 代表 resolve 数组的 key **/
-const KEY_RESOLVE_ARR = 'resolveArr'
-/** 代表 reject 数组的 key **/
-const KEY_REJECT_ARR = 'rejectArr'
-
 /**
- *  记录所有监听的 Promise
+ *  内部值集合
+ *    key 为自定义的字符串标识
+ *    value 为 “等值” 实例
  **/
-let resolveCollection = {}
+let valueCollection = {}
+
+/** “等值” 实例 **/
+class ValueItem {
+  constructor () {
+    this.resolveArr = []
+    this.rejectArr = []
+    this.value = null
+  }
+}
 
 /**
  *  根据 '标识名' 监听变量是否已赋值
@@ -24,28 +26,20 @@ let resolveCollection = {}
  *  @param { String } name - 标识名，需要和 emit 相同
  **/
 let on = function (name) {
-  /** 参数判断 **/
-  if (typeof name !== 'string') {
-    throw new TypeError('waitValue 的 name 参数必须为字符串')
-  }
-  
   return new Promise((resolve, reject) => {
     /**
      *  当前 name 指向的 resolve 集合
      *  若不存在则初始化
      **/
-    let target = resolveCollection[ name ] = resolveCollection[ name ] || {
-      /** resolve 数组 **/
-      [ KEY_RESOLVE_ARR ]: [],
-      /** reject 数组 **/
-      [ KEY_REJECT_ARR ]: []
-    }
+    let target = valueCollection[ name ] =
+      valueCollection[ name ] ||
+      new ValueItem()
     
     /**
      *  已有值，则立刻返回缓存的结果
      **/
-    if (target && target[ KEY_OK ] === true) {
-      resolve(target[ KEY_VALUE ])
+    if (target.value) {
+      resolve(target.value)
     }
     
     /**
@@ -54,8 +48,8 @@ let on = function (name) {
      *  等待 emit 触发
      **/
     else {
-      target[ KEY_RESOLVE_ARR ].push(resolve)
-      target[ KEY_REJECT_ARR ].push(reject)
+      target.resolveArr.push(resolve)
+      target.rejectArr.push(reject)
     }
   })
 }
@@ -69,26 +63,18 @@ let emit = function (name, value) {
    *  当前 name 指向的 resolve 集合
    *  若不存在则初始化
    **/
-  let target = resolveCollection[ name ] = resolveCollection[ name ] || {
-    /** resolve 数组 **/
-    [ KEY_RESOLVE_ARR ]: [],
-    /** reject 数组 **/
-    [ KEY_REJECT_ARR ]: []
-  }
-  
-  /** 参数判断 **/
-  if (typeof name !== 'string') {
-    throw new TypeError('waitValue 的 name 参数必须为字符串')
-  }
+  let target = valueCollection[ name ] =
+    valueCollection[ name ] ||
+    new ValueItem()
   
   /** 判断是否是重复触发 **/
-  if (target[ KEY_OK ]) {
+  if (target.value) {
     return console.warn(`来自 waitValue 的警告，${ name } 已被赋值，请勿重复通知`)
   }
   
   /** 若 value 是 error，则 reject **/
   if (value instanceof Error === true) {
-    target[ KEY_REJECT_ARR ].forEach(reject => {
+    target.rejectArr.forEach(reject => {
       reject(value)
     })
   }
@@ -99,19 +85,17 @@ let emit = function (name, value) {
    *  缓存结果（若为引用类型则会深拷贝）
    **/
   else {
-    target[ KEY_RESOLVE_ARR ].forEach(resolve => {
+    /** 触发全部的 resolve **/
+    target.resolveArr.forEach(resolve => {
       resolve(value)
     })
-    /** 状态改变 **/
-    target[ KEY_OK ] = true
+    
     /** 缓存值，若为引用类型深拷贝**/
-    target[ KEY_VALUE ] = typeof value === 'object' ?
-      JSON.parse(JSON.stringify(value))
-      :
-      value
+    target.value = value
+    
     /** 清除 resolve 和 reject 数组 **/
-    target[ KEY_RESOLVE_ARR ] = null
-    target[ KEY_REJECT_ARR ] = null
+    delete target.resolveArr
+    delete target.rejectArr
   }
 }
 
