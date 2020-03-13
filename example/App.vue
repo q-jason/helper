@@ -53,16 +53,36 @@
         </button>
       </div>
     </div>
+    <!-- prefix-zero -->
+    <div class="group">
+      <h3 class="group-title">
+        输入个位数字，点击按钮
+      </h3>
+      <div class="group-body">
+        <input v-model.number="prefixZero.before">
+        <br>
+        <br>
+        <input type="text" :value="prefixZero.after" disabled>
+        <br>
+        <br>
+        <button @click="prefixZeroHandler">
+          点击按钮后，看控制台吧
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import { log, waitValue, cacheValue, isEmptyValue } from '../src'
+  import { log, waitValue, cacheValue, isEmptyValue, prefixZero } from '../src'
 
   export default {
     data () {
       return {
-        test: null
+        prefixZero: {
+          before: null,
+          after: null
+        }
       }
     },
     methods: {
@@ -226,6 +246,11 @@
             isEmptyValue('字符串')
           ]
         })
+      },
+
+      /** 前缀补 0 **/
+      prefixZeroHandler () {
+        this.prefixZero.after = prefixZero(this.prefixZero.before, 2)
       }
     }
   }

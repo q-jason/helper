@@ -3702,7 +3702,10 @@ var log = function log(options) {
       title = options.title,
       desc = options.desc;
   var color = COLOR[type] || COLOR[TYPE.LOG];
-  /** 简写 **/
+  /**
+   *  简写逻辑
+   *  若配置项为字符串或者数字类型
+   **/
 
   if (typeof options === 'string' || typeof options === 'number') {
     title = options;
@@ -3710,29 +3713,14 @@ var log = function log(options) {
   }
   /** 对象配置 **/
   else {
-      var titleIsNumber = typeof title === 'number';
-      var titleIsStr = typeof title === 'string';
-      var descIsArr = desc instanceof Array;
-      var descIsErr = desc instanceof Error;
       /**
        *  优化使用
        *    desc 为 Error 类型，那么 type 为 err
        **/
-
-      color = descIsErr ? COLOR[TYPE.ERROR] : color;
-      /** title 参数检查 **/
-
-      if (!title) {
-        throw new TypeError('title 必须存在');
-      }
-
-      if (titleIsNumber === false && titleIsStr === false) {
-        throw new TypeError('title 必须是 String 或 Number 类型');
-      }
+      color = desc instanceof Error ? COLOR[TYPE.ERROR] : color;
       /** 统一 desc 为数组类型 **/
 
-
-      if (descIsArr === false) {
+      if (desc instanceof Array === false) {
         if (desc !== undefined) {
           desc = [desc];
         } else {
@@ -3761,6 +3749,123 @@ var log = function log(options) {
 };
 
 
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
+var es6_promise = __webpack_require__("551c");
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/classCallCheck.js
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+// CONCATENATED MODULE: ./src/modules/wait-value/index.js
+
+
+
+
+/**
+ *  内部值集合
+ *    key 为自定义的字符串标识
+ *    value 为 “等值” 实例
+ **/
+var valueCollection = {};
+/** “等值” 实例 **/
+
+var wait_value_ValueItem = function ValueItem() {
+  _classCallCheck(this, ValueItem);
+
+  this.resolveArr = [];
+  this.rejectArr = [];
+  this.value = null;
+};
+/**
+ *  根据 '标识名' 监听变量是否已赋值
+ *  该函数返回一个 Promise
+ *
+ *  该函数执行时
+ *  若 '标识名' 已被 emit 过
+ *  则会立刻触发 resolve
+ *  返回 emit 时的缓存值
+ *
+ *  @param { String } name - 标识名，需要和 emit 相同
+ **/
+
+
+var on = function on(name) {
+  return new Promise(function (resolve, reject) {
+    /**
+     *  当前 name 指向的 resolve 集合
+     *  若不存在则初始化
+     **/
+    var target = valueCollection[name] = valueCollection[name] || new wait_value_ValueItem();
+    /**
+     *  已有值，则立刻返回缓存的结果
+     **/
+
+    if (target.value) {
+      resolve(target.value);
+    }
+    /**
+     *  暂时无值
+     *  push resolve 和 reject
+     *  等待 emit 触发
+     **/
+    else {
+        target.resolveArr.push(resolve);
+        target.rejectArr.push(reject);
+      }
+  });
+};
+/**
+ *  用于通知变量已有值，触发回调
+ *  @param { String } name - 标识名，需要和 on 相同
+ **/
+
+
+var emit = function emit(name, value) {
+  /**
+   *  当前 name 指向的 resolve 集合
+   *  若不存在则初始化
+   **/
+  var target = valueCollection[name] = valueCollection[name] || new wait_value_ValueItem();
+  /** 判断是否是重复触发 **/
+
+  if (target.value) {
+    return console.warn("\u6765\u81EA waitValue \u7684\u8B66\u544A\uFF0C".concat(name, " \u5DF2\u88AB\u8D4B\u503C\uFF0C\u8BF7\u52FF\u91CD\u590D\u901A\u77E5"));
+  }
+  /** 若 value 是 error，则 reject **/
+
+
+  if (value instanceof Error === true) {
+    target.rejectArr.forEach(function (reject) {
+      reject(value);
+    });
+  }
+  /**
+   *  不是错误，则 resolve
+   *  设置已完成标识
+   *  缓存结果（若为引用类型则会深拷贝）
+   **/
+  else {
+      /** 触发全部的 resolve **/
+      target.resolveArr.forEach(function (resolve) {
+        resolve(value);
+      });
+      /** 缓存值，若为引用类型深拷贝**/
+
+      target.value = value;
+      /** 清除 resolve 和 reject 数组 **/
+
+      delete target.resolveArr;
+      delete target.rejectArr;
+    }
+};
+
+var waitValue = {
+  on: on,
+  emit: emit
+};
+
 // EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/symbol/iterator.js
 var iterator = __webpack_require__("5d58");
 var iterator_default = /*#__PURE__*/__webpack_require__.n(iterator);
@@ -3785,135 +3890,6 @@ function typeof_typeof(obj) {
 
   return typeof_typeof(obj);
 }
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__("551c");
-
-// CONCATENATED MODULE: ./src/modules/wait-value/index.js
-
-
-
-
-
-/** 代表已完成的 key **/
-var KEY_OK = 'ok';
-/** 代表缓存值的 key **/
-
-var KEY_VALUE = 'value';
-/** 代表 resolve 数组的 key **/
-
-var KEY_RESOLVE_ARR = 'resolveArr';
-/** 代表 reject 数组的 key **/
-
-var KEY_REJECT_ARR = 'rejectArr';
-/**
- *  记录所有监听的 Promise
- **/
-
-var resolveCollection = {};
-/**
- *  根据 '标识名' 监听变量是否已赋值
- *  该函数返回一个 Promise
- *
- *  该函数执行时
- *  若 '标识名' 已被 emit 过
- *  则会立刻触发 resolve
- *  返回 emit 时的缓存值
- *
- *  @param { String } name - 标识名，需要和 emit 相同
- **/
-
-var wait_value_on = function on(name) {
-  /** 参数判断 **/
-  if (typeof name !== 'string') {
-    throw new TypeError('waitValue 的 name 参数必须为字符串');
-  }
-
-  return new Promise(function (resolve, reject) {
-    var _ref;
-
-    /**
-     *  当前 name 指向的 resolve 集合
-     *  若不存在则初始化
-     **/
-    var target = resolveCollection[name] = resolveCollection[name] || (_ref = {}, _defineProperty(_ref, KEY_RESOLVE_ARR, []), _defineProperty(_ref, KEY_REJECT_ARR, []), _ref);
-    /**
-     *  已有值，则立刻返回缓存的结果
-     **/
-
-    if (target && target[KEY_OK] === true) {
-      resolve(target[KEY_VALUE]);
-    }
-    /**
-     *  暂时无值
-     *  push resolve 和 reject
-     *  等待 emit 触发
-     **/
-    else {
-        target[KEY_RESOLVE_ARR].push(resolve);
-        target[KEY_REJECT_ARR].push(reject);
-      }
-  });
-};
-/**
- *  用于通知变量已有值，触发回调
- *  @param { String } name - 标识名，需要和 on 相同
- **/
-
-
-var wait_value_emit = function emit(name, value) {
-  var _ref2;
-
-  /**
-   *  当前 name 指向的 resolve 集合
-   *  若不存在则初始化
-   **/
-  var target = resolveCollection[name] = resolveCollection[name] || (_ref2 = {}, _defineProperty(_ref2, KEY_RESOLVE_ARR, []), _defineProperty(_ref2, KEY_REJECT_ARR, []), _ref2);
-  /** 参数判断 **/
-
-  if (typeof name !== 'string') {
-    throw new TypeError('waitValue 的 name 参数必须为字符串');
-  }
-  /** 判断是否是重复触发 **/
-
-
-  if (target[KEY_OK]) {
-    return console.warn("\u6765\u81EA waitValue \u7684\u8B66\u544A\uFF0C".concat(name, " \u5DF2\u88AB\u8D4B\u503C\uFF0C\u8BF7\u52FF\u91CD\u590D\u901A\u77E5"));
-  }
-  /** 若 value 是 error，则 reject **/
-
-
-  if (value instanceof Error === true) {
-    target[KEY_REJECT_ARR].forEach(function (reject) {
-      reject(value);
-    });
-  }
-  /**
-   *  不是错误，则 resolve
-   *  设置已完成标识
-   *  缓存结果（若为引用类型则会深拷贝）
-   **/
-  else {
-      target[KEY_RESOLVE_ARR].forEach(function (resolve) {
-        resolve(value);
-      });
-      /** 状态改变 **/
-
-      target[KEY_OK] = true;
-      /** 缓存值，若为引用类型深拷贝**/
-
-      target[KEY_VALUE] = typeof_typeof(value) === 'object' ? JSON.parse(JSON.stringify(value)) : value;
-      /** 清除 resolve 和 reject 数组 **/
-
-      target[KEY_RESOLVE_ARR] = null;
-      target[KEY_REJECT_ARR] = null;
-    }
-};
-
-var waitValue = {
-  on: wait_value_on,
-  emit: wait_value_emit
-};
-
 // CONCATENATED MODULE: ./src/modules/cache-value/index.js
 
 
@@ -3928,7 +3904,6 @@ var innerCacheData = {};
  **/
 
 var cache_value_cache = function cache(name, value) {
-  /** name 强制转化为字符串 **/
   var _name = String(name);
 
   var _value = value;
@@ -3988,7 +3963,19 @@ var isEmptyValue = function isEmptyValue(value) {
 };
 
 
+// CONCATENATED MODULE: ./src/modules/prefix-zero/index.js
+/**
+ *  补 0 前缀
+ *  @param { Number } - 数字
+ *  @param { Number } - 固定的总位数
+ **/
+var prefixZero = function prefixZero(num, n) {
+  return (Array(n).join(0) + num).slice(-n);
+};
+
+
 // CONCATENATED MODULE: ./src/index.js
+
 
 
 
@@ -3998,6 +3985,7 @@ var isEmptyValue = function isEmptyValue(value) {
 /* concated harmony reexport waitValue */__webpack_require__.d(__webpack_exports__, "waitValue", function() { return waitValue; });
 /* concated harmony reexport cacheValue */__webpack_require__.d(__webpack_exports__, "cacheValue", function() { return cacheValue; });
 /* concated harmony reexport isEmptyValue */__webpack_require__.d(__webpack_exports__, "isEmptyValue", function() { return isEmptyValue; });
+/* concated harmony reexport prefixZero */__webpack_require__.d(__webpack_exports__, "prefixZero", function() { return prefixZero; });
 
 
 
