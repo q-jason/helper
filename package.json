@@ -8,6 +8,7 @@
     "build": "cross-env NODE_ENV=production vue-cli-service build --target lib --name helper ./src/index.js & vuepress build ./"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.8.7",
     "@vue/cli-plugin-babel": "^3.6.0",
     "@vue/cli-service": "^3.6.0",
     "core-js": "^2.6.5",
