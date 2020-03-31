@@ -3,7 +3,7 @@
 > 宗旨为只包含 es api，所以 node，小程序中也可以使用
 
 ## 安装
-> script 引入 /dist/helper.umd.min.js
+> script 引入 /dist/helper.umd.min.js <br/>
 > script 标签引入后会挂载 window.helper
 
 ```bash
