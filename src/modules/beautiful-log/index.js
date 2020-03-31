@@ -37,9 +37,13 @@ const log = function (options) {
   else {
     /**
      *  优化使用
-     *    desc 为 Error 类型，那么 type 为 err
+     *    若 desc 为 Error 类型，那么 type 默认为 err
      **/
-    color = desc instanceof Error ? COLOR[ TYPE.ERROR ] : color
+    color = desc instanceof Error ?
+      COLOR[ options.type ] ?
+        color :
+        COLOR[ TYPE.ERROR ] :
+      color
     
     /** 统一 desc 为数组类型 **/
     if (desc instanceof Array === false) {

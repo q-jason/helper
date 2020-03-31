@@ -121,62 +121,75 @@
       err () {
         log({
           title: '请求接口失败，打印出错误原因',
-          desc: new Error('失败了'),
-          type: 'warn'
+          desc: new Error('失败了')
         })
       },
 
       /** 等值操作 **/
-      async waitValue () {
-        let value = { num: 1 }
-        /** 延迟两秒后，test 标识赋值 **/
+      waitValue () {
+        /** 约定好的标志 **/
+        let sign = 'data'
+
+        /** 这里模拟两秒后会获取到某值 data **/
         setTimeout(() => {
-          waitValue.emit('test', value)
+          waitValue.emit(sign, 10086)
         }, 2000)
 
-        /** 等待 test 赋值后，才继续进行 **/
-        let data = await waitValue.on('test')
-        log({
-          title: '结束了',
-          desc: data
-        })
+        /** 等待 data 获取后，继续进行 **/
+        waitValue.on(sign)
+          .then(result => {
+            console.log(result);
+          })
+          .catch(err => {
+            console.err(err)
+          })
 
-        /** 下面执行时，因为 test 已被赋值，所以会立刻执行，并且结果为缓存的值 **/
-        value = { num: 2 }
-        let data2 = await waitValue.on('test')
         log({
-          title: '立刻返回',
-          desc: data2
+          title: '等值操作测试流程：',
+          desc: [
+            '1. 约定好标志',
+            '2. 通过 waitValue.on 监听对应标志的赋值操作',
+            '3. 异步获取到值后通过 waitValue.emit 广播',
+            '4. waitValue.on 基于 Promise，接到广播后，会触发 resolve 状态'
+          ]
         })
       },
 
       /** 缓存回退数据 **/
       cacheValue () {
-        /** 定义了 data 并缓存 **/
+        /** 定义了对象类型数据 data **/
         let data = { sons1: [ { name: 'son1' }, { name: 'son2' } ] }
-        cacheValue.cache('myData', data)
-        log({
-          title: '1. 首先定义了数据 data 并缓存了',
-          desc: [ JSON.parse(JSON.stringify(data)) ],
-          type: 'info'
-        })
+        let originData = data
+        // => data = { sons1: [ { name: 'son1' }, { name: 'son2' } ] }
 
-        /** 改变 data 数据 **/
+        /** 缓存了 data，由于是引用类型，内部深拷贝了 **/
+        cacheValue.cache('myData', data)
+        // => _data = { sons1: [ { name: 'son1' }, { name: 'son2' } ] }
+
+        /** 修改了 data 数据 **/
         data.sons1.push({ name: 'son3' })
-        log({
-          title: '2. 改变了数据 data',
-          desc: [ data ],
-          type: 'info'
-        })
+        // => data = { sons1: [ { name: 'son1' }, { name: 'son2' }, { name: 'son3' } ] }
 
         /** 回退数据 **/
-        cacheValue.back('myData', function (cacheData) {
-          data = cacheData
+        cacheValue.back('myData', function (_data) {
+          data = _data
         })
+        // => data = { sons1: [ { name: 'son1' }, { name: 'son2' } ] }
+
         log({
-          title: '3. 回退了数据 data',
-          desc: [ data ],
-          type: 'info'
+          title: '缓存值函数例子说明：',
+          desc: [
+            '1. 定义了对象类型数据 data',
+            '2. 使用缓存值函数将 data 缓存（由于是引用类型，内部自动深拷贝，这里简称为 _data）',
+            '3. 修改 data 数据，通过 push 的方法加入新元素',
+            '4. 通过缓存值函数回退值 _data = data',
+            '-----------------------------',
+            `修改后的 data`,
+            originData,
+            '------------------------------',
+            `还原后的 data`,
+            data
+          ]
         })
       },
 
