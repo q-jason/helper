@@ -596,7 +596,57 @@ fileSizeConver.format = function (size, originUnit, converUnit) {
 };
 
 
+// CONCATENATED MODULE: ./src/modules/obj-to-form-data/index.js
+/**
+ *  将 js 对象转为 formData
+ *  @param { Object }  obj - 需要转换为 formData 的对象
+ *  @param { Object }  [opts] - 配置
+ *  @param { Boolean } [opts.arrayBrackets=false] - 是否需要在数组类型的key后面加上小括号
+ *
+ *  @description
+ *    目前已知 php 解析 formData 数组类型时需要将 key 后面加上 [] 才能正常解析
+ *    而其他后端语言不用
+ *
+ *    php example:
+ *      files[]: (binary)
+ *      files[]: (binary)
+ *
+ *    other example:
+ *      files: (binary)
+ *      files: (binary)
+ **/
+var objToFormData = function objToFormData(obj) {
+  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+    arrayBrackets: false
+  };
+  var formData = new FormData();
+
+  var _loop = function _loop(key) {
+    var value = obj[key];
+    var isArr = value instanceof Array;
+    /** 数组类型 **/
+
+    if (isArr) {
+      value.forEach(function (itemValue, i) {
+        formData.append(opts.arrayBrackets ? key + '[]' : key, itemValue);
+      });
+    }
+    /** 非数组类型 **/
+    else {
+        formData.append(key, value);
+      }
+  };
+
+  for (var key in obj) {
+    _loop(key);
+  }
+
+  return formData;
+};
+
+
 // CONCATENATED MODULE: ./src/index.js
+
 
 
 
@@ -610,6 +660,7 @@ fileSizeConver.format = function (size, originUnit, converUnit) {
 /* concated harmony reexport isEmptyValue */__webpack_require__.d(__webpack_exports__, "isEmptyValue", function() { return isEmptyValue; });
 /* concated harmony reexport prefixZero */__webpack_require__.d(__webpack_exports__, "prefixZero", function() { return prefixZero; });
 /* concated harmony reexport fileSizeConver */__webpack_require__.d(__webpack_exports__, "fileSizeConver", function() { return fileSizeConver; });
+/* concated harmony reexport objToFormData */__webpack_require__.d(__webpack_exports__, "objToFormData", function() { return objToFormData; });
 
 
 

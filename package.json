@@ -1,6 +1,6 @@
 {
   "name": "jason-helper",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "main": "./dist/helper.umd.min.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development vue-cli-service serve example/main.js",
@@ -11,6 +11,7 @@
     "@babel/preset-env": "^7.8.7",
     "@vue/cli-plugin-babel": "^3.6.0",
     "@vue/cli-service": "^3.6.0",
+    "axios": "^0.19.2",
     "core-js": "^2.6.5",
     "cross-env": "^5.2.0",
     "node-sass": "^4.9.0",

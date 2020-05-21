@@ -112,11 +112,23 @@
         </button>
       </div>
     </div>
+    <!-- obj 转 formData -->
+    <div class="group">
+      <h3 class="group-title">
+        obj 转 formData
+      </h3>
+      <div class="group-body">
+        <button @click="objToFormData">
+          点击后，看控制台，看 network 的请求（假的）
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import { log, waitValue, cacheValue, isEmptyValue, prefixZero, fileSizeConver } from '../src'
+  import axios from 'axios'
+  import { log, waitValue, cacheValue, isEmptyValue, prefixZero, fileSizeConver, objToFormData } from '../src'
 
   export default {
     data () {
@@ -327,6 +339,18 @@
 
         this.fileSizeConver.result = result
         this.fileSizeConver.betterResult = betterResult
+      },
+
+      /** obj 转为 formdata **/
+      objToFormData () {
+        let obj = { a: 1, b: 2, c: [ 1, 2, 3 ] }
+        let formData = objToFormData(obj)
+        let formData2 = objToFormData(obj, { arrayBrackets: true })
+
+        console.log(formData)
+
+        axios.post('https://www.baidu.com', formData)
+        axios.post('https://www.baidu.com', formData2)
       }
     }
   }
