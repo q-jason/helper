@@ -70,11 +70,53 @@
         </button>
       </div>
     </div>
+    <!-- 文件单位转换 -->
+    <div class="group">
+      <h3 class="group-title">
+        点击按钮后，看控制台吧
+      </h3>
+      <div class="group-body">
+        <div>
+          <p>文件体积：</p>
+          <input type="text" v-model.number="fileSizeConver.size">
+        </div>
+        <div>
+          <p>转换前的单位：</p>
+          <select v-model="fileSizeConver.beforeUnit">
+            <option value="b">b</option>
+            <option value="kb">kb</option>
+            <option value="mb">mb</option>
+            <option value="gb">gb</option>
+            <option value="tb">tb</option>
+          </select>
+        </div>
+        <div>
+          <p>转换后的单位：</p>
+          <select v-model="fileSizeConver.afterUnit">
+            <option value="b">b</option>
+            <option value="kb">kb</option>
+            <option value="mb">mb</option>
+            <option value="gb">gb</option>
+            <option value="tb">tb</option>
+          </select>
+        </div>
+        <div>
+          <p>结果：</p>
+          <p>{{ fileSizeConver.result }}</p>
+          <br>
+          <p>更好的显示结果：</p>
+          <p>{{ fileSizeConver.betterResult }}</p>
+        </div>
+        <button @click="fileSizeConverHandler">
+          转换
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import { log, waitValue, cacheValue, isEmptyValue, prefixZero } from '../src'
+  import { log, waitValue, cacheValue, isEmptyValue, prefixZero, fileSizeConver } from '../src'
 
   export default {
     data () {
@@ -82,6 +124,13 @@
         prefixZero: {
           before: null,
           after: null
+        },
+        fileSizeConver: {
+          size: '',
+          beforeUnit: 'b',
+          afterUnit: 'mb',
+          result: '',
+          betterResult: ''
         }
       }
     },
@@ -138,7 +187,7 @@
         /** 等待 data 获取后，继续进行 **/
         waitValue.on(sign)
           .then(result => {
-            console.log(result);
+            console.log(result)
           })
           .catch(err => {
             console.err(err)
@@ -264,6 +313,20 @@
       /** 前缀补 0 **/
       prefixZeroHandler () {
         this.prefixZero.after = prefixZero(this.prefixZero.before, 2)
+      },
+
+      /** 单位转换 **/
+      fileSizeConverHandler () {
+        let { size, beforeUnit, afterUnit } = this.fileSizeConver
+
+        let result = fileSizeConver.format(size, beforeUnit, afterUnit)
+        let betterResult = fileSizeConver.betterShow(
+          parseFloat(result),
+          afterUnit
+        )
+
+        this.fileSizeConver.result = result
+        this.fileSizeConver.betterResult = betterResult
       }
     }
   }

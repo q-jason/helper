@@ -412,7 +412,183 @@ var prefixZero = function prefixZero(num, n) {
 };
 
 
+// CONCATENATED MODULE: ./src/modules/file-size-conver/index.js
+var fileSizeConver = {};
+
+fileSizeConver.betterShow = function (size, unit) {
+  var bSize = null;
+
+  var _unit = unit.toLowerCase();
+
+  var _size = '';
+  /** 将 size 转为 bSize **/
+
+  switch (_unit) {
+    case 'b':
+      {
+        bSize = size;
+        break;
+      }
+
+    case 'kb':
+      {
+        bSize = size * 1024;
+        break;
+      }
+
+    case 'mb':
+      {
+        bSize = size * 1024 * 1024;
+        break;
+      }
+
+    case 'gb':
+      {
+        bSize = size * 1024 * 1024 * 1024;
+        break;
+      }
+
+    case 'tb':
+      {
+        bSize = size * 1024 * 1024 * 1024 * 1024;
+        break;
+      }
+
+    default:
+      {
+        throw new Error("fileSizeConver\uFF1AoriginUnit \u53C2\u6570\u5355\u4F4D\u9519\u8BEF ".concat(originUnit));
+      }
+  }
+
+  if (bSize < 0.1 * 1024) {
+    //如果小于0.1KB转化成B
+    _size = bSize.toFixed(2) + 'B';
+  } else if (bSize < 0.1 * 1024 * 1024) {
+    //如果小于0.1MB转化成KB
+    _size = (bSize / 1024).toFixed(2) + 'KB';
+  } else if (bSize < 0.1 * 1024 * 1024 * 1024) {
+    //如果小于0.1GB转化成MB
+    _size = (bSize / (1024 * 1024)).toFixed(2) + 'MB';
+  } else {
+    //其他转化成GB
+    _size = (bSize / (1024 * 1024 * 1024)).toFixed(2) + 'GB';
+  }
+
+  var _sizestr = _size + '';
+
+  var len = _sizestr.indexOf('\.');
+
+  var dec = _sizestr.substr(len + 1, 2);
+
+  if (dec == '00') {
+    //当小数点后为00时 去掉小数部分
+    return _sizestr.substring(0, len) + _sizestr.substr(len + 3, 2);
+  }
+
+  return _sizestr;
+};
+/**
+ *  @param { Number } size - 文件大小
+ *  @param { String } originUnit      - 转换前的文件单位
+ *  @param { String } converUnit      - 转换后的文件单位
+ *  @param { Boolean } [hasUnit=true] - 转换后是否带单位
+ **/
+
+
+fileSizeConver.format = function (size, originUnit, converUnit) {
+  var hasUnit = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+  var bSize = null;
+  var formatSize = null;
+  var fileLengthFormatNParams = null;
+
+  var _originUnit = originUnit.toLowerCase();
+
+  var _converUnit = converUnit.toLowerCase();
+  /** 将 size 转为 bSize **/
+
+
+  switch (_originUnit) {
+    case 'b':
+      {
+        bSize = size;
+        break;
+      }
+
+    case 'kb':
+      {
+        bSize = size * 1024;
+        break;
+      }
+
+    case 'mb':
+      {
+        bSize = size * 1024 * 1024;
+        break;
+      }
+
+    case 'gb':
+      {
+        bSize = size * 1024 * 1024 * 1024;
+        break;
+      }
+
+    case 'tb':
+      {
+        bSize = size * 1024 * 1024 * 1024 * 1024;
+        break;
+      }
+
+    default:
+      {
+        throw new Error("fileSizeConver\uFF1AoriginUnit \u53C2\u6570\u5355\u4F4D\u9519\u8BEF ".concat(originUnit));
+      }
+  }
+  /** 确定 fileLengthFormatNParams **/
+
+
+  switch (_converUnit) {
+    case 'b':
+      {
+        formatSize = bSize + 'b';
+        break;
+      }
+
+    case 'kb':
+      {
+        formatSize = bSize / 1024 + 'kb';
+        break;
+      }
+
+    case 'mb':
+      {
+        formatSize = bSize / 1024 / 1024 + 'mb';
+        break;
+      }
+
+    case 'gb':
+      {
+        formatSize = bSize / 1024 / 1024 / 1024 + 'gb';
+        break;
+      }
+
+    case 'tb':
+      {
+        formatSize = bSize / 1024 / 1024 / 1024 / 1024 + 'tb';
+        break;
+      }
+
+    default:
+      {
+        throw new Error("fileSizeConver\uFF1AconverUnit \u53C2\u6570\u5355\u4F4D\u9519\u8BEF ".concat(converUnit));
+      }
+  }
+
+  return hasUnit ? formatSize : parseFloat(formatSize);
+};
+
+
 // CONCATENATED MODULE: ./src/index.js
+
 
 
 
@@ -424,6 +600,7 @@ var prefixZero = function prefixZero(num, n) {
 /* concated harmony reexport cacheValue */__webpack_require__.d(__webpack_exports__, "cacheValue", function() { return cacheValue; });
 /* concated harmony reexport isEmptyValue */__webpack_require__.d(__webpack_exports__, "isEmptyValue", function() { return isEmptyValue; });
 /* concated harmony reexport prefixZero */__webpack_require__.d(__webpack_exports__, "prefixZero", function() { return prefixZero; });
+/* concated harmony reexport fileSizeConver */__webpack_require__.d(__webpack_exports__, "fileSizeConver", function() { return fileSizeConver; });
 
 
 
