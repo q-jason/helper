@@ -295,6 +295,7 @@ var on = function on(name) {
 /**
  *  用于通知变量已有值，触发回调
  *  @param { String } name - 标识名，需要和 on 相同
+ *  @param { String } value - 结果值，该值会被缓存起来
  **/
 
 
@@ -329,7 +330,7 @@ var emit = function emit(name, value) {
       });
       /** 缓存值，若为引用类型深拷贝**/
 
-      target.value = value;
+      target.value = value || true;
       /** 清除 resolve 和 reject 数组 **/
 
       delete target.resolveArr;
