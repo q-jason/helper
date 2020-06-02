@@ -11,7 +11,8 @@ module.exports = {
       [ '/src/modules/is-empty-value/', '判断是否是空值' ],
       [ '/src/modules/prefix-zero/', '前缀补0' ],
       [ '/src/modules/file-size-conver/', '文件体积单位转换' ],
-      [ '/src/modules/obj-to-form-data/', '对象转为formData' ]
+      [ '/src/modules/obj-to-form-data/', '对象转为formData' ],
+      [ '/src/modules/hide-part-str/', '隐藏部分的字符串' ]
     ]
   }
 }

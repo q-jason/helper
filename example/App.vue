@@ -123,12 +123,32 @@
         </button>
       </div>
     </div>
+    <!-- 隐藏部分字符串 -->
+    <div class="group">
+      <h3 class="group-title">
+        隐藏部分字符串
+      </h3>
+      <div class="group-body">
+        <button @click="hidePartStr">
+          点击后看控制台
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
-  import { log, waitValue, cacheValue, isEmptyValue, prefixZero, fileSizeConver, objToFormData } from '../src'
+  import {
+    log,
+    waitValue,
+    cacheValue,
+    isEmptyValue,
+    prefixZero,
+    fileSizeConver,
+    objToFormData,
+    hidePartStr
+  } from '../src'
 
   export default {
     data () {
@@ -351,6 +371,18 @@
 
         axios.post('https://www.baidu.com', formData)
         axios.post('https://www.baidu.com', formData2)
+      },
+
+      /** 隐藏部分字符串 **/
+      hidePartStr () {
+        console.log(
+          hidePartStr(
+            '17754123612',
+            '*',
+            3,
+            -4
+          )
+        )
       }
     }
   }
