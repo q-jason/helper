@@ -1,6 +1,6 @@
 # jason-helper
-> 项目中积攒下来的实用 js 工具库 <br/>
-> 宗旨为只包含 es api，所以 node，小程序中也可以使用
+> 项目中积攒下来的实用 js 工具库
+> 游览器、node、小程序均可使用
 
 ## 文档
 > https://q-jason.github.io/helper/
