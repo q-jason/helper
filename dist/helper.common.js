@@ -254,12 +254,13 @@ var ValueItem = function ValueItem() {
  *  则会立刻触发 resolve
  *  返回 emit 时的缓存值
  *
- *  @param { String } name - 标识名，需要和 emit 相同
+ *  @param { String }   name       - 标识名，需要和 emit 相同
+ *  @param { Function } [callback] - 等值成功后的回调函数
  **/
 
 
-var on = function on(name) {
-  return new Promise(function (resolve, reject) {
+var on = function on(name, callback) {
+  var promise = new Promise(function (resolve, reject) {
     /**
      *  当前 name 指向的 resolve 集合
      *  若不存在则初始化
@@ -282,6 +283,27 @@ var on = function on(name) {
         target.rejectArr.push(reject);
       }
   });
+  /**
+   *  若 callback 存在
+   *  则在 promise resolve 后执行 callback
+   *  on 方法为同步函数
+   **/
+
+  if (callback) {
+    promise.then(function (result) {
+      return callback(null, result);
+    }).catch(function (err) {
+      return callback(err, null);
+    });
+    return null;
+  }
+  /**
+   *  若 callback 不存在
+   *  则返回 Promise
+   **/
+  else {
+      return promise;
+    }
 };
 /**
  *  用于通知变量已有值，触发回调

@@ -219,19 +219,24 @@
         /** 等待 data 获取后，继续进行 **/
         waitValue.on(sign)
           .then(result => {
-            console.log(result)
+            console.log('基于 Promise：' + result)
           })
-          .catch(err => {
+          .catch(
+            err => {
             console.err(err)
           })
+
+        waitValue.on(sign, (err, result) => {
+          console.log('基于 callback：' + result)
+        })
 
         log({
           title: '等值操作测试流程：',
           desc: [
             '1. 约定好标志',
-            '2. 通过 waitValue.on 监听对应标志的赋值操作',
+            '2. 通过 waitValue.on 方法监听对应标志的赋值操作',
             '3. 异步获取到值后通过 waitValue.emit 广播',
-            '4. waitValue.on 基于 Promise，接到广播后，会触发 resolve 状态'
+            '4. waitValue.on 触发 callback 函数 或 进入 resolve 状态'
           ]
         })
       },
