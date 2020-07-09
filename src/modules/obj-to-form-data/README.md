@@ -1,6 +1,11 @@
 ## 说明
 > 将 object 转为 formData
 
+## 兼容性
+- [x] H5
+- [ ] 小程序
+- [x] node
+
 ## 方法设计
 
  function       | params                                | description

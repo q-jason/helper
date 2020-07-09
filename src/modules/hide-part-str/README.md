@@ -1,6 +1,11 @@
 ## 说明
 > 隐藏部分字符串显示
 
+## 兼容性
+- [x] H5
+- [x] 小程序
+- [x] node
+
 ## 包罗万象的例子
 ```javascript
 import { hidePartStr } from 'jason-helper'

@@ -4,6 +4,11 @@
 > 由于隐式转换的存在，还要判断 0 的情况 <br/>
 > 这里统一封装下
 
+## 兼容性
+- [x] H5
+- [x] 小程序
+- [x] node
+
 ## 方法设计
 
  function      | params | description

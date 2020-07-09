@@ -1,6 +1,12 @@
 ## 说明
 > 美化 console 样式
 
+
+## 兼容性
+- [x] H5
+- [x] 小程序
+- [x] node
+
 ## 包罗万象的用法
 ```javascript
 import { log } from 'jason-helper';
