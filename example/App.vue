@@ -134,6 +134,27 @@
         </button>
       </div>
     </div>
+    <!-- JasonWebSocket -->
+    <div class="group">
+      <h3 class="group-title">
+        JasonWebSocket
+      </h3>
+      <div class="group-body">
+        <button
+          v-if="!jws"
+          @click="startJasonWebSocket">
+          连接
+        </button>
+        <template v-if="jws">
+          <button @click="sendJasonWebSocket">
+            发送消息
+          </button>
+          <button @click="closeJasonWebSocket">
+            关闭连接
+          </button>
+        </template>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -147,7 +168,8 @@
     prefixZero,
     fileSizeConver,
     objToFormData,
-    hidePartStr
+    hidePartStr,
+    JasonWebSocket
   } from '../src'
 
   export default {
@@ -163,7 +185,8 @@
           afterUnit: 'mb',
           result: '',
           betterResult: ''
-        }
+        },
+        jws: null
       }
     },
     methods: {
@@ -223,8 +246,8 @@
           })
           .catch(
             err => {
-            console.err(err)
-          })
+              console.err(err)
+            })
 
         waitValue.on(sign, (err, result) => {
           console.log('基于 callback：' + result)
@@ -388,6 +411,40 @@
             -4
           )
         )
+      },
+
+      /** 建立 Websocket 连接 **/
+      startJasonWebSocket () {
+        let jws = new JasonWebSocket('ws://121.40.165.18:8800', {
+          retry () {
+            return new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve(true)
+              }, 1000)
+            })
+          }
+        })
+
+        jws.on('open', (e) => {
+          log('连接成功')
+          this.jws = jws
+        })
+        jws.on('message', (e) => {
+          log({
+            title: '接收到了消息',
+            desc: e.data
+          })
+        })
+        jws.on('close', (e) => {
+          log('关闭了 ws 连接')
+          this.jws = null
+        })
+      },
+      sendJasonWebSocket () {
+        this.jws.send(123123)
+      },
+      closeJasonWebSocket () {
+        this.jws.close()
       }
     }
   }
