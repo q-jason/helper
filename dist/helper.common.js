@@ -1221,6 +1221,9 @@ function () {
     /** 事件对象 **/
 
     this._events = new events["EventEmitter"]();
+    /** 是否手动关闭（调用了 close 方法） **/
+
+    this._activClose = false;
     /** 初始化连接 **/
 
     this._init(url, opts);
@@ -1287,7 +1290,7 @@ function () {
         /**
          *  ! 不重连
          **/
-        if (Boolean(opts.retry) === false) {
+        if (Boolean(opts.retry) === false || _this._activClose === true) {
           return null;
         }
         /**
@@ -1402,6 +1405,8 @@ function () {
     value: function close() {
       var _this$ws2;
 
+      /** 手动关闭标识 **/
+      this._activClose = true;
       return (_this$ws2 = this.ws).close.apply(_this$ws2, arguments);
     }
   }]);

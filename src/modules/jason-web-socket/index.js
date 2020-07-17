@@ -25,6 +25,9 @@ class JasonWebSocket {
     /** 事件对象 **/
     this._events = new EventEmitter()
     
+    /** 是否手动关闭（调用了 close 方法） **/
+    this._activClose = false
+    
     /** 初始化连接 **/
     this._init(url, opts)
   }
@@ -58,7 +61,10 @@ class JasonWebSocket {
       /**
        *  ! 不重连
        **/
-      if (Boolean(opts.retry) === false) {
+      if (
+        Boolean(opts.retry) === false ||
+        this._activClose === true
+      ) {
         return null
       }
       
@@ -114,6 +120,9 @@ class JasonWebSocket {
   
   /** 主动关闭连接，代理 ws.close 方法 **/
   close (...args) {
+    /** 手动关闭标识 **/
+    this._activClose = true
+    
     return this.ws.close(...args)
   }
 }
