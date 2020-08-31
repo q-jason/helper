@@ -45,7 +45,7 @@
     <!-- is-empty-value -->
     <div class="group">
       <h3 class="group-title">
-        点击按钮后，看控制台吧
+        判断值是否是为 null, undefined, '', '  ', NAN
       </h3>
       <div class="group-body">
         <button @click="isEmptyValue">
@@ -119,7 +119,7 @@
       </h3>
       <div class="group-body">
         <button @click="objToFormData">
-          点击后，看控制台，看 network 的请求（假的）
+          点击后，看控制台，看 network 的请求（看参数用）（注意控制台会报错）
         </button>
       </div>
     </div>
@@ -391,7 +391,7 @@
 
       /** obj 转为 formdata **/
       objToFormData () {
-        let obj = { a: 1, b: 2, c: [ 1, 2, 3 ] }
+        let obj = { a: 1, b: 2, c: [ 1, 2, 3 ], d: undefined, f: null }
         let formData = objToFormData(obj)
         let formData2 = objToFormData(obj, { arrayBrackets: true })
 

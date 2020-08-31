@@ -11,3 +11,6 @@
  function       | params                                | description
  -------------  | ------------------------------------- | ------------------------------------------------------------------------------
  objToFormData  | obj, opts = { arrayBrackets: false }  | arrayBrackets：若为数组类型是否给 key 加上中括号（便于 php 解析）
+
+注意：
+- 若字段对应的值为 undefined 或 null 则忽略该字段

@@ -23,19 +23,22 @@ const objToFormData = function (obj, opts = { arrayBrackets: false }) {
     const value = obj[ key ]
     const isArr = value instanceof Array
     
-    /** 数组类型 **/
-    if (isArr) {
-      value.forEach(function (itemValue, i) {
-        formData.append(
-          opts.arrayBrackets ? key + '[]' : key,
-          itemValue
-        )
-      })
-    }
-    
-    /** 非数组类型 **/
-    else {
-      formData.append(key, value)
+    /** 值为 undefined ，null 的字段将被省略 **/
+    if (value !== undefined && value !== null) {
+      /** 数组类型 **/
+      if (isArr) {
+        value.forEach(function (itemValue, i) {
+          formData.append(
+            opts.arrayBrackets ? key + '[]' : key,
+            itemValue
+          )
+        })
+      }
+      
+      /** 非数组类型 **/
+      else {
+        formData.append(key, value)
+      }
     }
   }
   
